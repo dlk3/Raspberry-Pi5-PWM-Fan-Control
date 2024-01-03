@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 from gpiozero import PWMOutputDevice
 import time
 import signal
