@@ -49,4 +49,10 @@ Next i will focus on the RPM sensing script that is included but not modified.
 Hope the solution will provide some relief to your hears in the meanwhile: it work really great.
 Thanks to DriftKingTW for his contribution.
 
+# As a Service
+
+move fan_control.py to /usr/local/sbin/fan_control.py and use pifancontrol.service to start the script as a service.
+
+
+
 Giovanni
