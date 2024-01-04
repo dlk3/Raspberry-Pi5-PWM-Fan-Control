@@ -7,7 +7,7 @@ import os
 
 # Configuration
 FAN_PIN = 14		# BCM pin used to drive PWM fan
-WAIT_TIME = 1		# [s] Time to wait between each refresh
+WAIT_TIME = 2		# [s] Time to wait between each refresh
 PWM_FREQ = 25		# [kHz] 25kHz for Noctua PWM control
 
 # Configurable temperature and fan speed
@@ -30,11 +30,11 @@ def setFanSpeed(speed):
 # Handle fan speed
 def handleFanSpeed():
 	temp = float(getCpuTemperature())
-	print("cpu temp: {}".format(temp))
+	#print("cpu temp: {}".format(temp))
 	# Turn off the fan if temperature is below MIN_TEMP
 	if temp < MIN_TEMP:
 		setFanSpeed(FAN_OFF)
-		print("Fan OFF") # Uncomment for testing
+		#print("Fan OFF") # Uncomment for testing
 	# Set fan speed to MAXIMUM if the temperature is above MAX_TEMP
 	elif temp > MAX_TEMP:
 		setFanSpeed(FAN_MAX)
@@ -44,7 +44,7 @@ def handleFanSpeed():
 		step = (FAN_HIGH - FAN_LOW)/(MAX_TEMP - MIN_TEMP)
 		temp -= MIN_TEMP
 		setFanSpeed(FAN_LOW + ( round(temp) * step ))
-		print(FAN_LOW + ( round(temp) * step )) # Uncomment for testing
+		#print(FAN_LOW + ( round(temp) * step )) # Uncomment for testing
 	return ()
 
 
