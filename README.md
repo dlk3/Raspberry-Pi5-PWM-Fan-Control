@@ -16,10 +16,10 @@ https://youtube.com/shorts/Tli3IQgPb0Y?si=yvr9UhOcsW-5ewzx
 
 # CONNECTIONS
 
-      YELLOW cable = +5V
-      BLACK cable = GND
-      GREEN CABLE = RPM sensing (needs a voltage divider, at least)
-      BLUE cable = PWM control (it is an open circuit with pull-up and i measured 2.6V on the cable, making it suitable for a direct connection to the GPIO header)
+- **YELLOW cable** = +5V
+- **BLACK cable** = GND
+- **GREEN CABLE** = RPM sensing (needs a voltage divider, at least)
+- **BLUE cable** = PWM control (it is an open circuit with pull-up and i measured 2.6V on the cable, making it suitable for a direct connection to the GPIO header)
 
 ## Fan connector MOD
 
@@ -77,10 +77,13 @@ Thanks to DriftKingTW for his contribution.
 
 # As a Service
 
-You need two files: pifancontrol.service and pifancontrol.service, from the repository.
-Collect the two files the way you prefer and copy them as suggested below.
+You need two files from the repository: 
+1. pifancontrol.service 
+2. fan_control.py
 
-You can simply 
+Collect the two files the way you prefer and copy them in the locations suggested below.
+
+You can simply...
 
       git clone https://github.com/franganghi/Raspberry-Pi5-PWM-Fan-Control.git
       cd Raspberry-Pi5-PWM-Fan-Control/
