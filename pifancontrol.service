@@ -1,9 +1,11 @@
 [Unit]
-Description=Service for pifancontrol
+Description=Dynamic FAN control
+After=multi-user.target
 
 [Service]
-ExecStart=/usr/local/sbin/fan_control.py
-Restart=on-failure
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/sbin/fan_control.py
+Restart=on-abort
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
