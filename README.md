@@ -10,6 +10,10 @@ I modified the script to make it suitable for the Raspberry PI 5.
 The script can be used with ANY fan, using proper interfacing techniques.
 Anyway, any 5V PWM NOCTUA fans have the advantage of being very quiet and having the PWM control cable directly connectable with GPIO pin of the PI.
 
+This YT short can show you how it works:
+
+https://youtube.com/shorts/Tli3IQgPb0Y?si=yvr9UhOcsW-5ewzx
+
 # CONNECTIONS
 
       YELLOW cable = +5V
@@ -17,19 +21,41 @@ Anyway, any 5V PWM NOCTUA fans have the advantage of being very quiet and having
       GREEN CABLE = RPM sensing (needs a voltage divider, at least)
       BLUE cable = PWM control (it is an open circuit with pull-up and i measured 2.6V on the cable, making it suitable for a direct connection to the GPIO header)
 
+## Fan connector MOD
+
+You can eventually use the origina fan connector, after some modifications are made on it.
+Check the Pictures below.
+
+![Alt text](Fan%20Connection%201.jpg?raw=true "Title")
+
+![Alt text](Fan%20Connection%202.jpg?raw=true "Title")
+
+![Alt text](Fan%20Connection%203.jpg?raw=true "Title")
+
+Basically, you should change the PIN order to get from GND/+5V/RPM/PWM to +5V/GND/PWM/empty on the connector (the green cable should not be connected, if not with a proper interfacing circuit). Then you can stick the connector on the GPIO header, connecting the YELLOW cable to PIN 4, BLACK on 6 and BLUE on pin 8: doing so, you will have to use GPIO 14 to control the speed of your fan.
+
+I measured the tension on the NOCTUA PWM pin (blue cable) and it was 2.6V in my case.
+ALWAYS check the tension on that pin before using your fan to the GPIO 14 on your PI: it should be lower than 3.3V!!!
+
+One wrong FAN and you will fry the PI.
+You invert the connector, you will fry your fan.
+The connector of your fan was not modified before connecting it? You'll fry your PI.
+
+Be carefull.
+
 # TESTING
 
 At the beginning of the script, you can find many useful parameter:
 
-FAN_PIN # BCM pin used to drive PWM fan
-WAIT_TIME # [s] Time to wait between each refresh
-PWM_FREQ # [kHz] 25kHz for Noctua PWM control
-MIN_TEMP # under this temp value fan is switched to the FAN_OFF speed
-MAX_TEMP # over this temp value fan is switched to the FAN_MAX speed
-FAN_LOW # lower side of the fan speed range during cooling
-FAN_HIGH # higher side of the fan speed range during cooling
-FAN_OFF # fan speed to set if the detected temp is below MIN_TEMP 
-FAN_MAX # fan speed to set if the detected temp is above MAX_TEMP 
+      FAN_PIN # BCM pin used to drive PWM fan
+      WAIT_TIME # [s] Time to wait between each refresh
+      PWM_FREQ # [kHz] 25kHz for Noctua PWM control
+      MIN_TEMP # under this temp value fan is switched to the FAN_OFF speed
+      MAX_TEMP # over this temp value fan is switched to the FAN_MAX speed
+      FAN_LOW # lower side of the fan speed range during cooling
+      FAN_HIGH # higher side of the fan speed range during cooling
+      FAN_OFF # fan speed to set if the detected temp is below MIN_TEMP 
+      FAN_MAX # fan speed to set if the detected temp is above MAX_TEMP 
 
 # Scripting
 
@@ -52,7 +78,11 @@ Thanks to DriftKingTW for his contribution.
 # As a Service
 
 You need two files: pifancontrol.service and pifancontrol.service, from the repository.
-Collect the two files the way you prefer and copy them as suggested below:
+Collect the two files the way you prefer and copy them as suggested below.
+
+You can simply 
+
+      git clone https://github.com/franganghi/Raspberry-Pi5-PWM-Fan-Control.git
 
 ## Install
 
