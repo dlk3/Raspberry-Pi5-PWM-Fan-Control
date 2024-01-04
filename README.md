@@ -83,6 +83,7 @@ Collect the two files the way you prefer and copy them as suggested below.
 You can simply 
 
       git clone https://github.com/franganghi/Raspberry-Pi5-PWM-Fan-Control.git
+      cd Raspberry-Pi5-PWM-Fan-Control/
 
 ## Install
 
@@ -115,6 +116,8 @@ You can simply
       sudo rm /lib/systemd/system/pifancontrol.service
 
 
+The script will be started on boot and will be restarted in case of errors.
 
+Enjoy.
 
 Giovanni - Rome - Italy
