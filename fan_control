@@ -33,8 +33,10 @@ PWM_FREQ = 25		# [kHz] 25kHz as specified by Noctua for PWM control
 # Temperature range within which fan speed is variable.  If temperature
 # drops below MIN_TEMP, the fan will be turned off.  If it rises above
 # MAX_TEMP, the fan will run at top speed.
-MIN_TEMP = 40
-MAX_TEMP = 80
+#
+# See https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-5-fans
+MIN_TEMP = 50
+MAX_TEMP = 75
 
 # Number of seconds between temperature checks / fan speed adjustments
 LOOP_SECS = 30
