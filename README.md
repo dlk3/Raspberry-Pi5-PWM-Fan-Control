@@ -1,9 +1,11 @@
 # Raspberry Pi5 PWM Fan Control
 
-I (Dave King) have rewritten the fan_control script in this project to simplify it.
+I (Dave King) have rewritten the fan_control script in this project to simplify it.  I also
+added an info message to output the current SoC temperature and the corresponding PWM speed setting calculated by the script.  I added a debug command line option to output intermediate
+progress messages and a quiet option to suppress all messages.
 
-The rest of this remains unchanged as I wanted to preserve the instructions on rewiring
-the fan to work with the Raspberry Pi.
+The rest of this remains unchanged as I wanted to preserve the most excellent instructions on
+rewiring the fan to work with the Raspberry Pi.
 
 <hr>
 
@@ -30,7 +32,7 @@ https://youtube.com/shorts/Tli3IQgPb0Y?si=yvr9UhOcsW-5ewzx
 
 ## Fan connector MOD
 
-You can eventually use the origina fan connector, after some modifications are made on it.
+You can eventually use the original fan connector, after some modifications are made on it.
 Check the Pictures below.
 
 ![Alt text](Fan%20Connection%201.jpg?raw=true "Title")
