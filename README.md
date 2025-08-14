@@ -1,5 +1,12 @@
 # Raspberry Pi5 PWM Fan Control
 
+I (Dave King) have rewritten the fan_control script in this project to simplify it.
+
+The rest of this remains unchanged as I wanted to preserve the instructions on rewiring
+the fan to work with the Raspberry Pi.
+
+<hr>
+
 The script was originally published by 
 https://github.com/DriftKingTW
 

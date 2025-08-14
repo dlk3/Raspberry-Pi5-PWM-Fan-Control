@@ -1,0 +1,98 @@
+#! /usr/bin/env python
+
+#  MIT License
+#
+#  Copyright (C) 2025  David King <dave@daveking.com>
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+
+#  Inspired by https://github.com/franganghi/Raspberry-Pi5-PWM-Fan-Control.
+#  That project has great instructions for the rewiring of the a to work with 
+#  the GPIO pins on the Raspberry Pi
+
+# Configuration
+PWM_PIN = 14		# BCM pin on GPIO used to drive PWM fan
+PWM_FREQ = 25		# [kHz] 25kHz as specified by Noctua for PWM control
+
+# Temperature range within which fan speed is variable.  If temperature
+# drops below MIN_TEMP, the fan will be turned off.  If it rises above
+# MAX_TEMP, the fan will run at top speed.
+MIN_TEMP = 40
+MAX_TEMP = 80
+
+# Number of seconds between temperature checks / fan speed adjustments
+LOOP_SECS = 30
+
+#  By default we'll print log messages to the console
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
+from gpiozero import PWMOutputDevice
+import subprocess
+import optparse
+import time
+
+#  Provide -d|--debug and -q|--quiet command line options to control message output
+parser = optparse.OptionParser(usage='usage: %prog', description='Set the speed of a fam attached to the GPOI pins on a Raspberry Pi based on the SoCs temperature.')
+parser.add_option('-d', '--debug', action='store_true', dest='debug', default=False, help='Output additional debugging information')
+parser.add_option('-q', '--quiet', action='store_true', dest='quiet', default=False, help='Suppress all messages from script')
+opts, args = parser.parse_args()
+if opts.debug:
+    logger.setLevel(logging.DEBUG)
+if opts.quiet:
+    logger.setLevel(logging.CRITICAL)
+
+#  We must use a loop because the PWM GPIO pin is only active while this process
+#  runs.  When this process exits, the PWM GPIO pin is released and the fan speed 
+#  returns to its default.
+while True:
+
+    try:
+        # Get CPU temperature
+        proc = subprocess.run('vcgencmd measure_temp', shell=True, capture_output=True)
+        cpu_temp = float(proc.stdout.decode('utf-8').split('=')[1].split("'")[0])
+        logger.debug(f'SoC temperature = {cpu_temp}\u00B0C')
+
+        # Calculate desired fan speed percentage
+        fan_speed = round((cpu_temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP), 3)
+        if fan_speed < 0:
+            fan_speed = 0
+        elif fan_speed > 1:
+           fan_speed = 1
+        logger.debug(f'Configured temperature range {MIN_TEMP}\u00B0C -> {MAX_TEMP}\u00B0C')
+        logger.debug(f'Desired fan speed = {fan_speed} ({round(fan_speed * 100, 3)}%)')
+
+        #  Adjust the fan speed
+        try:
+            #  Assume the PWM pin object already exists and just set the speed
+            pwm_fan.value = fan_speed
+            logger.debug('pwm_fan object exists, setting fan speed')
+        except:
+            #  When the object doesn't exist (the first time through the loop), 
+            #  create it and set the fan speed
+            logger.debug('Initializing pwm_fan object and setting fan speed')
+            pwm_fan = PWMOutputDevice(PWM_PIN, initial_value=fan_speed, frequency=PWM_FREQ)
+        logger.info(f'SoC temperature is {cpu_temp}\u00B0C, fan speed adjusted to {pwm_fan.value * 100}%')
+
+        logger.debug(f'Sleeping for {LOOP_SECS} seconds')
+        time.sleep(LOOP_SECS)
+    except KeyboardInterrupt:
+        #  Handle Ctrl-C from the keyboard gracefully
+        exit()

@@ -1,0 +1,11 @@
+[Unit]
+Description=Cooling fan speed control daemon
+After=syslog.target
+
+[Service]
+type=exec
+Restart=always
+ExecStart=/usr/local/bin/fan_control
+
+[Install]
+WantedBy=multi-user.target
