@@ -1,0 +1,69 @@
+#! /usr/bin/env python
+
+#  MIT License
+#
+#  Copyright (C) 2025  David King <dave@daveking.com>
+#
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so, subject to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be included in all
+#  copies or substantial portions of the Software.
+#
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+#  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+#  SOFTWARE.
+###############################################################################
+#  Calculate the fan speed from a Noctua fan when its blue sensor wire is 
+#  connected to a GPIO pin.  
+#
+#  See https://noctua.at/pub/media/wysiwyg/Noctua_PWM_specifications_white_paper.pdf
+#
+#  The values returned by this process appear to wildly inaccurate and it often
+#  stopsa producing output for some unknown reason.
+
+TACH_PIN=15
+FAN_MAX_RPM = 5000
+
+#  By default we'll print log messages to the console
+import logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+
+from gpiozero import DigitalInputDevice
+from queue import Queue
+import time
+
+#  The following routine will be called in the background each time the GPIO pin
+#  cycles from high to low.  The elapsed time between cycles will be put onto a
+#  queue for later use.
+t = time.time()
+q = Queue()
+def queue_elapsed_time():
+    global t
+    global q
+    q.put(time.time() - t)
+    t = time.time()
+
+#  Configure the GPIO pin
+tach = DigitalInputDevice(TACH_PIN, pull_up=True, bounce_time=0.005)
+tach.when_deactivated = queue_elapsed_time
+
+#  Take each elapsed time entry from the queue and display it as an RPM value
+#  and as a percentage of the maximum fan speed.
+try:
+    while True:
+        while not q.empty():
+            rpm = 1 / q.get() * 60 / 2
+            percent = round(rpm / FAN_MAX_RPM * 100)
+            logger.info(f'RPM = {round(rpm)} ({percent}%)') 
+except KeyboardInterrupt:
+    exit() 
