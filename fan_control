@@ -70,7 +70,7 @@ while True:
         # Get CPU temperature
         proc = subprocess.run('vcgencmd measure_temp', shell=True, capture_output=True)
         cpu_temp = float(proc.stdout.decode('utf-8').split('=')[1].split("'")[0])
-        logger.debug(f'SoC temperature = {cpu_temp}\u00B0C')
+        logger.debug(f'SoC temperature = {cpu_temp}\u2103')
 
         # Calculate desired fan speed percentage
         fan_speed = round((cpu_temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP), 3)
@@ -78,7 +78,7 @@ while True:
             fan_speed = 0
         elif fan_speed > 1:
            fan_speed = 1
-        logger.debug(f'Configured temperature range {MIN_TEMP}\u00B0C -> {MAX_TEMP}\u00B0C')
+        logger.debug(f'Configured temperature range {MIN_TEMP}\u2103 -> {MAX_TEMP}\u2103')
         logger.debug(f'Desired fan speed = {fan_speed} ({round(fan_speed * 100, 3)}%)')
 
         #  Adjust the fan speed
@@ -91,7 +91,7 @@ while True:
             #  create it and set the fan speed
             logger.debug('Initializing pwm_fan object and setting fan speed')
             pwm_fan = PWMOutputDevice(PWM_PIN, initial_value=fan_speed, frequency=PWM_FREQ)
-        logger.info(f'SoC temperature is {cpu_temp}\u00B0C, fan speed adjusted to {pwm_fan.value * 100}%')
+        logger.info(f'SoC temperature is {cpu_temp}\u2103, fan speed adjusted to {pwm_fan.value * 100}%')
 
         logger.debug(f'Sleeping for {LOOP_SECS} seconds')
         time.sleep(LOOP_SECS)

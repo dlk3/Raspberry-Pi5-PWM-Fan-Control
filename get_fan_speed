@@ -30,7 +30,7 @@
 #  The values returned by this process appear to wildly inaccurate and it often
 #  stopsa producing output for some unknown reason.
 
-TACH_PIN=15
+TACH_PIN=15         #  Attach the fan's green wire to this pin
 FAN_MAX_RPM = 5000
 
 #  By default we'll print log messages to the console
@@ -43,8 +43,8 @@ from queue import Queue
 import time
 
 #  The following routine will be called in the background each time the GPIO pin
-#  cycles from high to low.  The elapsed time between cycles will be put onto a
-#  queue for later use.
+#  cycles from high to low.  The elapsed time between cycles will be written onto
+#  a queue for later use.
 t = time.time()
 q = Queue()
 def queue_elapsed_time():
@@ -64,6 +64,7 @@ try:
         while not q.empty():
             rpm = 1 / q.get() * 60 / 2
             percent = round(rpm / FAN_MAX_RPM * 100)
-            logger.info(f'RPM = {round(rpm)} ({percent}%)') 
+            logger.info(f'RPM = {round(rpm)} ({percent}%)')
+        time.sleep(.5)
 except KeyboardInterrupt:
     exit() 
