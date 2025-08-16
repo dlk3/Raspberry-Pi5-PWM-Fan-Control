@@ -22,12 +22,12 @@
 #  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #  SOFTWARE.
 ###############################################################################
-#  Calculate the fan speed from a Noctua fan when its blue sensor wire is 
+#  Calculate the fan speed from a Noctua fan when its green sensor wire is 
 #  connected to a GPIO pin.  
 #
 #  See https://noctua.at/pub/media/wysiwyg/Noctua_PWM_specifications_white_paper.pdf
 #
-#  The values returned by this process appear to wildly inaccurate and it often
+#  The values returned by this process appear to be wildly inaccurate and it often
 #  stops producing output for some unknown reason.  Maybe this should be written in
 #  C++ so the performance keeps up with the fan output?  Maybe this should use
 #  libgpiod (the gpiod Python API)?  Except that gpiod is way down-level in Debian
