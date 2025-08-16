@@ -28,7 +28,10 @@
 #  See https://noctua.at/pub/media/wysiwyg/Noctua_PWM_specifications_white_paper.pdf
 #
 #  The values returned by this process appear to wildly inaccurate and it often
-#  stopsa producing output for some unknown reason.
+#  stops producing output for some unknown reason.  Maybe this should be written in
+#  C++ so the performance keeps up with the fan output?  Maybe this should use
+#  libgpiod (the gpiod Python API)?  Except that gpiod is way down-level in Debian
+#  so maybe we should use the pip installed version?
 
 TACH_PIN=15         #  Attach the fan's green wire to this pin
 FAN_MAX_RPM = 5000
@@ -44,7 +47,7 @@ import time
 
 #  The following routine will be called in the background each time the GPIO pin
 #  cycles from high to low.  The elapsed time between cycles will be written onto
-#  a queue for later use.
+#  a queue use by the calling program.
 t = time.time()
 q = Queue()
 def queue_elapsed_time():
